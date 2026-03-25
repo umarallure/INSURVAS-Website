@@ -10,6 +10,13 @@ import {
   Twitter, Instagram, Linkedin, Youtube, Disc, Menu, X
 } from 'lucide-react'
 
+function getAvatarUrl(name: string) {
+  // Deterministic mapping so each person keeps the same photo.
+  const seed = name.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const avatarId = (seed % 70) + 1
+  return `https://i.pravatar.cc/160?img=${avatarId}`
+}
+
 function MatrixRain() {
   useEffect(() => {
     const canvas = document.getElementById('matrix-canvas') as HTMLCanvasElement | null
@@ -331,10 +338,30 @@ function AnimatedFeaturesHeading() {
   )
 }
 
-function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementType, title: string, description: string }) {
+function FeatureCard({ icon: Icon, title, description, index }: { icon: React.ElementType, title: string, description: string, index: number }) {
+  const rowBias = index < 4 ? -1 : 1
   return (
     <div 
-      className="rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:scale-[1.02]"
+      className="feature-tilt-card rounded-2xl p-4 sm:p-5 h-[250px] sm:h-[270px] lg:h-[290px] flex flex-col"
+      onMouseMove={(e) => {
+        const card = e.currentTarget
+        const rect = card.getBoundingClientRect()
+        const x = (e.clientX - rect.left) / rect.width
+        const y = (e.clientY - rect.top) / rect.height
+        const rotateX = ((0.5 - y) * 12) + rowBias * 1.2
+        const rotateY = (x - 0.5) * 16
+        card.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`)
+        card.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`)
+        card.style.setProperty('--ty', '-8px')
+        card.style.setProperty('--sc', '1.02')
+      }}
+      onMouseLeave={(e) => {
+        const card = e.currentTarget
+        card.style.setProperty('--rx', '0deg')
+        card.style.setProperty('--ry', '0deg')
+        card.style.setProperty('--ty', '0px')
+        card.style.setProperty('--sc', '1')
+      }}
       style={{
         background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.09) 100%)',
         border: '1px solid rgba(255, 255, 255, 0.22)',
@@ -344,17 +371,20 @@ function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementTy
       }}
     >
       <div 
-        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4"
+        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mb-2 sm:mb-3"
         style={{
           background: 'linear-gradient(135deg, rgba(99, 139, 75, 0.16) 0%, rgba(99, 139, 75, 0.08) 100%)',
           border: '1px solid rgba(99, 139, 75, 0.28)',
           boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10)'
         }}
       >
-        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#638b4b]" />
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#638b4b]" />
       </div>
-      <h3 className="text-white font-semibold text-base sm:text-lg mb-2">{title}</h3>
-      <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{description}</p>
+      <h3 className="text-[#638b4b] font-semibold text-base sm:text-lg mb-2">{title}</h3>
+      <p className="text-white text-xs sm:text-sm leading-relaxed">{description}</p>
+      <p className="text-[#638b4b] text-xs sm:text-sm font-semibold mt-2">
+        Learn more
+      </p>
     </div>
   )
 }
@@ -419,24 +449,23 @@ function Features() {
           >
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
             <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold tracking-wider uppercase">PLATFORM FEATURES</span>
-            <span className="text-[#638b4b]/60 text-[10px] sm:text-xs hidden sm:inline">-</span>
-            <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold">01</span>
           </div>
 
           <AnimatedFeaturesHeading />
 
-          <p className="text-slate-400 text-sm sm:text-lg">
+          <p className="text-white text-sm sm:text-lg">
             One platform. Total control over your leads, agents, and growth.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
           {features.map((feature, index) => (
             <FeatureCard 
               key={index}
               icon={feature.icon}
               title={feature.title}
               description={feature.description}
+              index={index}
             />
           ))}
         </div>
@@ -484,29 +513,31 @@ function SuccessCard({
         <div 
           className="inline-flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full mb-3 sm:mb-4"
           style={{
-            background: `${badgeColor}15`,
-            border: `1px solid ${badgeColor}40`
+            background: 'linear-gradient(135deg, #638b4b 0%, #3d6c31 100%)',
+            border: '1px solid rgba(99, 139, 75, 0.95)',
+            boxShadow: '0 4px 16px rgba(99, 139, 75, 0.35)'
           }}
         >
-          <span className="text-[10px] sm:text-xs font-semibold uppercase" style={{ color: badgeColor }}>{badge}</span>
+          <span className="text-[10px] sm:text-xs font-semibold uppercase text-white">{badge}</span>
         </div>
 
         <h3 className="text-white font-bold text-lg sm:text-xl mb-2 sm:mb-3 leading-tight">{title}</h3>
-        <p className="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">{description}</p>
+        <p className="text-white text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">{description}</p>
 
         <div 
           className="rounded-xl p-3 sm:p-4"
           style={{
-            background: 'rgba(0, 0, 0, 0.22)',
-            border: '1px solid rgba(255, 255, 255, 0.14)',
-            backdropFilter: 'blur(14px)',
-            WebkitBackdropFilter: 'blur(14px)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12)'
+            background:
+              'linear-gradient(135deg, rgba(99, 139, 75, 0.48) 0%, rgba(61, 108, 49, 0.34) 55%, rgba(99, 139, 75, 0.24) 100%)',
+            border: '1px solid rgba(99, 139, 75, 0.62)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16)'
           }}
         >
           <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-2xl sm:text-3xl font-bold" style={{ color: statColor }}>{stat}</span>
-            <span className="text-slate-400 text-xs sm:text-sm">{statLabel}</span>
+            <span className="text-2xl sm:text-3xl font-bold text-white">{stat}</span>
+            <span className="text-white text-xs sm:text-sm">{statLabel}</span>
           </div>
         </div>
       </div>
@@ -564,13 +595,11 @@ function SuccessStories() {
           >
             <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
             <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold tracking-wider uppercase">PROVEN PERFORMANCE</span>
-            <span className="text-[#638b4b]/60 text-[10px] sm:text-xs hidden sm:inline">-</span>
-            <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold">02</span>
           </div>
 
           <AnimatedSuccessHeading />
 
-          <p className="text-slate-400 text-sm sm:text-lg">
+          <p className="text-white text-sm sm:text-lg">
             See how agents and agencies are closing faster, scaling smarter, and growing consistently with INSURVAS.
           </p>
         </div>
@@ -618,7 +647,7 @@ function StatCard({ icon: Icon, stat, label }: { icon: React.ElementType, stat: 
       >
         {stat}
       </div>
-      <p className="text-slate-400 text-xs sm:text-sm">{label}</p>
+      <p className="text-white text-xs sm:text-sm">{label}</p>
     </div>
   )
 }
@@ -626,13 +655,11 @@ function StatCard({ icon: Icon, stat, label }: { icon: React.ElementType, stat: 
 function TestimonialCard({ 
   quote, 
   name, 
-  role, 
-  initials 
+  role
 }: { 
   quote: string
   name: string
   role: string
-  initials: string
 }) {
   return (
     <div 
@@ -650,25 +677,27 @@ function TestimonialCard({
         ))}
       </div>
 
-      <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-[#638b4b]/30 mb-2 sm:mb-3" />
+      <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-white/40 mb-2 sm:mb-3" />
 
-      <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 italic">
+      <p className="text-white text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 italic">
         "{quote}"
       </p>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <div 
-          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold text-[#638b4b]"
-          style={{
-            background: 'linear-gradient(135deg, rgba(99, 139, 75, 0.2) 0%, rgba(99, 139, 75, 0.1) 100%)',
-            border: '1px solid rgba(99, 139, 75, 0.3)'
-          }}
+        <div
+          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0"
+          style={{ border: '1px solid rgba(99, 139, 75, 0.45)' }}
         >
-          {initials}
+          <img
+            src={getAvatarUrl(name)}
+            alt={`${name} avatar`}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
         </div>
         <div>
           <p className="text-white font-semibold text-xs sm:text-sm">{name}</p>
-          <p className="text-slate-500 text-[10px] sm:text-xs">{role}</p>
+          <p className="text-white text-[10px] sm:text-xs">{role}</p>
         </div>
       </div>
     </div>
@@ -774,8 +803,6 @@ function Testimonials() {
             }}
           >
             <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold tracking-wider uppercase">CUSTOMER STORIES</span>
-            <span className="text-[#638b4b]/60 text-[10px] sm:text-xs hidden sm:inline">-</span>
-            <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold">03</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4">
@@ -790,7 +817,7 @@ function Testimonials() {
             </span>
           </h2>
 
-          <p className="text-slate-400 text-sm sm:text-lg max-w-2xl mx-auto mt-2 sm:mt-4">
+          <p className="text-white text-sm sm:text-lg max-w-2xl mx-auto mt-2 sm:mt-4">
             Powering agents, agencies, and publishers with real volume, real speed, and real results.
           </p>
         </div>
@@ -806,13 +833,7 @@ function Testimonials() {
           ))}
         </div>
 
-        <div 
-          className="relative overflow-hidden"
-          style={{ 
-            maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)'
-          }}
-        >
+        <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -829,7 +850,6 @@ function Testimonials() {
                 quote={testimonial.quote}
                 name={testimonial.name}
                 role={testimonial.role}
-                initials={testimonial.initials}
               />
             ))}
             {testimonials.map((testimonial, index) => (
@@ -838,7 +858,6 @@ function Testimonials() {
                 quote={testimonial.quote}
                 name={testimonial.name}
                 role={testimonial.role}
-                initials={testimonial.initials}
               />
             ))}
           </div>
@@ -854,8 +873,11 @@ function FAQItem({ question, answer, isOpen, onClick }: { question: string, answ
       className="rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300"
       style={{
         background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.09) 100%)',
-        border: isOpen ? '1px solid rgba(99, 139, 75, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
-        boxShadow: isOpen ? '0 12px 45px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(99, 139, 75, 0.05) inset' : '0 12px 45px rgba(0, 0, 0, 0.35)',
+        borderTop: isOpen ? '1px solid rgba(99, 139, 75, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
+        borderRight: isOpen ? '1px solid rgba(99, 139, 75, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
+        borderBottom: isOpen ? '1px solid rgba(99, 139, 75, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
+        borderLeft: isOpen ? '3px solid #638b4b' : '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: isOpen ? '0 12px 45px rgba(0, 0, 0, 0.35), 0 0 18px rgba(99, 139, 75, 0.22)' : '0 12px 45px rgba(0, 0, 0, 0.35)',
         backdropFilter: 'blur(18px)',
         WebkitBackdropFilter: 'blur(18px)'
       }}
@@ -868,7 +890,7 @@ function FAQItem({ question, answer, isOpen, onClick }: { question: string, answ
           {question}
         </span>
         <ChevronDown 
-          className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'text-[#638b4b] rotate-180' : 'text-slate-400'}`}
+          className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'text-[#638b4b] rotate-180' : 'text-white'}`}
         />
       </button>
       
@@ -876,10 +898,9 @@ function FAQItem({ question, answer, isOpen, onClick }: { question: string, answ
         className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
       >
         <div 
-          className="px-4 sm:px-6 pb-4 sm:pb-5 ml-4 sm:ml-6 mr-4 sm:mr-6"
-          style={{ borderLeft: '3px solid #638b4b' }}
+          className="px-4 sm:px-6 pb-4 sm:pb-5"
         >
-          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{answer}</p>
+          <p className="text-white text-xs sm:text-sm leading-relaxed">{answer}</p>
         </div>
       </div>
     </div>
@@ -936,14 +957,12 @@ function FAQ() {
           >
             <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
             <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold tracking-wider uppercase">FAQ</span>
-            <span className="text-[#638b4b]/60 text-[10px] sm:text-xs hidden sm:inline">-</span>
-            <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold">05</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4">
-            <span className="text-white">Got Questions? </span>
+            <span className="text-white block">Got Questions?</span>
             <span 
-              className="bg-clip-text text-transparent"
+              className="bg-clip-text text-transparent block mt-1 sm:mt-2"
               style={{
                 backgroundImage: 'linear-gradient(135deg, #638b4b 0%, #75a85e 25%, #5e9a52 50%, #3d6c31 100%)',
               }}
@@ -952,7 +971,7 @@ function FAQ() {
             </span>
           </h2>
 
-          <p className="text-slate-400 text-sm sm:text-lg max-w-2xl mx-auto mt-4">
+          <p className="text-white text-sm sm:text-lg max-w-2xl mx-auto mt-4">
             Everything you need to know about how INSURVAS helps you generate, manage, and close more insurance policies.
           </p>
         </div>
@@ -993,13 +1012,13 @@ function ContactCard({ icon: Icon, label, value, href }: { icon: React.ElementTy
           border: '1px solid rgba(99, 139, 75, 0.2)'
         }}
       >
-        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#638b4b]" />
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-slate-400 text-[10px] sm:text-xs mb-0.5 sm:mb-1">{label}</p>
+        <p className="text-white text-[10px] sm:text-xs mb-0.5 sm:mb-1">{label}</p>
         <p className="text-white font-semibold text-xs sm:text-sm truncate">{value}</p>
       </div>
-      <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-slate-500 group-hover:text-[#638b4b] transition-colors flex-shrink-0" />
+      <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-white group-hover:text-white transition-colors flex-shrink-0" />
     </a>
   )
 }
@@ -1021,23 +1040,21 @@ function Contact() {
           >
             <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
             <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold tracking-wider uppercase">GET IN TOUCH</span>
-            <span className="text-[#638b4b]/60 text-[10px] sm:text-xs hidden sm:inline">-</span>
-            <span className="text-[#638b4b] text-[10px] sm:text-xs font-semibold">06</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4">
-            <span className="text-white">Let's </span>
+            <span className="text-white block">Let's Build</span>
             <span 
-              className="bg-clip-text text-transparent"
+              className="bg-clip-text text-transparent block mt-1 sm:mt-2"
               style={{
                 backgroundImage: 'linear-gradient(135deg, #638b4b 0%, #75a85e 25%, #5e9a52 50%, #3d6c31 100%)',
               }}
             >
-              Build Your Insurance Pipeline.
+              Your Insurance Pipeline.
             </span>
           </h2>
 
-          <p className="text-slate-400 text-sm sm:text-lg">
+          <p className="text-white text-sm sm:text-lg">
             Have questions or want to get started? Connect with our team and see how INSURVAS can help you scale faster.
           </p>
         </div>
@@ -1062,27 +1079,18 @@ function Contact() {
               value="Book a 15-min demo"
               href="#"
             />
-            <div 
-              className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl"
-              style={{
-                background: 'linear-gradient(145deg, rgba(20, 20, 20, 0.9) 0%, rgba(15, 15, 15, 0.95) 100%)',
-                border: '1px solid rgba(255, 255, 255, 0.08)'
-              }}
-            >
-              <div 
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(99, 139, 75, 0.15) 0%, rgba(99, 139, 75, 0.08) 100%)',
-                  border: '1px solid rgba(99, 139, 75, 0.2)'
-                }}
-              >
-                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#638b4b]" />
-              </div>
-              <div className="flex-1">
-                <p className="text-slate-400 text-[10px] sm:text-xs mb-0.5 sm:mb-1">Operating Nationwide</p>
-                <p className="text-white font-semibold text-xs sm:text-sm">United States</p>
-              </div>
-            </div>
+            <ContactCard 
+              icon={MapPin}
+              label="Operating Nationwide"
+              value="United States"
+              href="#"
+            />
+            <ContactCard
+              icon={MessageSquare}
+              label="Live Support"
+              value="Mon-Sat, 9AM-8PM EST"
+              href="#"
+            />
           </div>
 
           <div 
@@ -1097,7 +1105,7 @@ function Contact() {
           >
             <form className="space-y-4 sm:space-y-6">
               <div>
-                <label className="block text-slate-400 text-xs sm:text-sm mb-1.5 sm:mb-2">Name</label>
+                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Name</label>
                 <input 
                   type="text"
                   placeholder="Your name"
@@ -1109,7 +1117,7 @@ function Contact() {
                 />
               </div>
               <div>
-                <label className="block text-slate-400 text-xs sm:text-sm mb-1.5 sm:mb-2">Email</label>
+                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Email</label>
                 <input 
                   type="email"
                   placeholder="you@company.com"
@@ -1121,7 +1129,7 @@ function Contact() {
                 />
               </div>
               <div>
-                <label className="block text-slate-400 text-xs sm:text-sm mb-1.5 sm:mb-2">Message</label>
+                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Message</label>
                 <textarea 
                   placeholder="Tell us about your deals..."
                   rows={4}
@@ -1185,7 +1193,7 @@ function CTA() {
               </span>
             </h2>
 
-            <p className="text-slate-400 text-sm sm:text-lg mb-6 sm:mb-10 max-w-lg mx-auto">
+            <p className="text-white text-sm sm:text-lg mb-6 sm:mb-10 max-w-lg mx-auto">
               Join agents, agencies, and publishers already scaling their insurance business with INSURVAS.
             </p>
 
@@ -1208,13 +1216,16 @@ function CTA() {
 
 function Footer() {
   return (
-    <footer 
-      className="relative py-10 sm:py-16"
-      style={{
-        borderTop: '1px solid rgba(255, 255, 255, 0.06)'
-      }}
-    >
+    <footer className="relative pt-12 sm:pt-20 pb-10 sm:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          className="mb-10 sm:mb-14"
+          style={{
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(99, 139, 75, 0.5) 25%, rgba(99, 139, 75, 0.7) 50%, rgba(99, 139, 75, 0.5) 75%, transparent 100%)',
+            boxShadow: '0 0 12px rgba(99, 139, 75, 0.25)'
+          }}
+        />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-8 sm:mb-12">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -1225,25 +1236,25 @@ function Footer() {
                 draggable={false}
               />
             </div>
-            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
-              The all-in-one operating system for insurance professionals - from lead acquisition to final issuance.testing
+            <p className="text-white text-xs sm:text-sm leading-relaxed">
+              The all-in-one operating system for insurance professionals - from lead acquisition to final issuance.
             </p>
           </div>
 
           <div>
             <h4 className="text-white font-semibold text-[10px] sm:text-xs uppercase tracking-wider mb-3 sm:mb-4">Platform</h4>
             <ul className="space-y-2 sm:space-y-3">
-              <li><a href="#features" className="text-slate-400 hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Features</a></li>
-              <li><a href="#case-studies" className="text-slate-400 hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Results</a></li>
-              <li><a href="#faq" className="text-slate-400 hover:text-[#638b4b] text-xs sm:text-sm transition-colors">FAQ</a></li>
+              <li><a href="#features" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Features</a></li>
+              <li><a href="#case-studies" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Results</a></li>
+              <li><a href="#faq" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">FAQ</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold text-[10px] sm:text-xs uppercase tracking-wider mb-3 sm:mb-4">Legal</h4>
             <ul className="space-y-2 sm:space-y-3">
-              <li><a href="#" className="text-slate-400 hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">Terms of Service</a></li>
             </ul>
           </div>
 
@@ -1258,7 +1269,7 @@ function Footer() {
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <Disc className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-[#638b4b]" />
+                <Disc className="w-4 h-4 sm:w-5 sm:h-5 text-white hover:text-white" />
               </a>
               <a 
                 href="#" 
@@ -1268,7 +1279,7 @@ function Footer() {
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <Twitter className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-[#638b4b]" />
+                <Twitter className="w-4 h-4 sm:w-5 sm:h-5 text-white hover:text-white" />
               </a>
               <a 
                 href="#" 
@@ -1278,7 +1289,7 @@ function Footer() {
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-[#638b4b]" />
+                <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-white hover:text-white" />
               </a>
               <a 
                 href="#" 
@@ -1288,7 +1299,7 @@ function Footer() {
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-[#638b4b]" />
+                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-white hover:text-white" />
               </a>
               <a 
                 href="#" 
@@ -1298,7 +1309,7 @@ function Footer() {
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <Youtube className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-[#638b4b]" />
+                <Youtube className="w-4 h-4 sm:w-5 sm:h-5 text-white hover:text-white" />
               </a>
             </div>
           </div>
@@ -1307,10 +1318,10 @@ function Footer() {
         <div 
           className="pt-6 sm:pt-8 text-center"
           style={{
-            borderTop: '1px solid rgba(255, 255, 255, 0.06)'
+            borderTop: '1px solid rgba(255, 255, 255, 0.12)'
           }}
         >
-          <p className="text-slate-500 text-xs sm:text-sm">
+          <p className="text-white text-xs sm:text-sm">
             © 2026 INSURVAS. All rights reserved.
           </p>
         </div>
@@ -1344,10 +1355,10 @@ function Navigation() {
           </div>
           
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
-            <a href="#features" className="text-slate-300 hover:text-white transition-colors text-sm">Features</a>
-            <a href="#case-studies" className="text-slate-300 hover:text-white transition-colors text-sm">Case Studies</a>
-            <a href="#faq" className="text-slate-300 hover:text-white transition-colors text-sm">FAQ</a>
-            <a href="#contact" className="text-slate-300 hover:text-white transition-colors text-sm">Contact</a>
+            <a href="#features" className="text-white hover:text-white transition-colors text-sm">Features</a>
+            <a href="#case-studies" className="text-white hover:text-white transition-colors text-sm">Case Studies</a>
+            <a href="#faq" className="text-white hover:text-white transition-colors text-sm">FAQ</a>
+            <a href="#contact" className="text-white hover:text-white transition-colors text-sm">Contact</a>
           </div>
 
           <div className="hidden md:flex items-center gap-3 sm:gap-4">
@@ -1380,10 +1391,10 @@ function Navigation() {
             }}
           >
             <div className="space-y-1">
-              <a href="#features" className="block text-slate-300 hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">Features</a>
-              <a href="#case-studies" className="block text-slate-300 hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">Results</a>
-              <a href="#faq" className="block text-slate-300 hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">FAQ</a>
-              <a href="#contact" className="block text-slate-300 hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">Contact</a>
+              <a href="#features" className="block text-white hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">Features</a>
+              <a href="#case-studies" className="block text-white hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">Results</a>
+              <a href="#faq" className="block text-white hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">FAQ</a>
+              <a href="#contact" className="block text-white hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all text-sm">Contact</a>
             </div>
             <div className="mt-4 pt-4 space-y-2" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <button 
@@ -1427,7 +1438,7 @@ function Hero() {
 
         <AnimatedHeading />
 
-        <p className="text-sm sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed">
+        <p className="text-sm sm:text-lg lg:text-xl text-white max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed">
           The all-in-one operating system for insurance professionals - from lead acquisition to final issuance.
         </p>
 
@@ -1445,25 +1456,76 @@ function Hero() {
 
         </div>
 
-        <p className="text-slate-500 text-xs sm:text-sm mb-8 sm:mb-12"></p>
+        <p className="text-white text-xs sm:text-sm mb-8 sm:mb-12"></p>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-slate-400 text-xs sm:text-sm">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-white text-xs sm:text-sm">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
+            <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             <span>Enterprise-Grade Security</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <Cpu className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
+            <Cpu className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             <span>AI-Powered Lead Qualification</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             <span>Setup in Minutes</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <Users className="w-3 h-3 sm:w-4 sm:h-4 text-[#638b4b]" />
+            <Users className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             <span>500+ Active Agents & Agencies</span>
           </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CalendlyEmbed() {
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://assets.calendly.com/assets/external/widget.js'
+    script.async = true
+    document.body.appendChild(script)
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
+
+  return (
+    <section id="book-demo" className="relative py-10 sm:py-14 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-8">
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
+            <span className="text-white block">Book a Demo.</span>
+            <span
+              className="bg-clip-text text-transparent block mt-1 sm:mt-2"
+              style={{
+                backgroundImage: 'linear-gradient(135deg, #638b4b 0%, #75a85e 25%, #5e9a52 50%, #3d6c31 100%)',
+              }}
+            >
+              See INSURVAS in Action.
+            </span>
+          </h2>
+          <p className="text-white text-sm sm:text-lg max-w-4xl mx-auto mt-4 sm:whitespace-nowrap">
+            Pick a time that works for you. Our team will walk you through the platform live.
+          </p>
+        </div>
+      </div>
+
+      {/* Full-bleed embed so Calendly uses nearly full viewport width (less empty margin) */}
+      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 px-0 sm:px-1">
+        <div className="overflow-hidden rounded-none sm:rounded-lg border-y border-[rgba(99,139,75,0.22)] sm:border sm:border-[rgba(99,139,75,0.28)]">
+          <div
+            className="calendly-inline-widget calendly-fullbleed w-full"
+            data-url="https://calendly.com/muhammad-u-unlimitedinsurance/new-meeting?hide_gdpr_banner=1&background_color=0b0b0b&text_color=ffffff&primary_color=638b4b"
+            style={{
+              minWidth: '100%',
+              width: '100%',
+              minHeight: 'min(85vh, 820px)',
+              height: 'min(85vh, 820px)'
+            }}
+          />
         </div>
       </div>
     </section>
@@ -1475,6 +1537,7 @@ export default function Home() {
     <main className="relative bg-black min-h-screen">
       <Navigation />
       <Hero />
+      <CalendlyEmbed />
       <Features />
       <SuccessStories />
       <Testimonials />

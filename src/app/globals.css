@@ -32,4 +32,37 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .feature-tilt-card {
+    --rx: 0deg;
+    --ry: 0deg;
+    --ty: 0px;
+    --sc: 1;
+    transform: perspective(1200px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--ty)) scale(var(--sc));
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 350ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 350ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature-tilt-card {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Calendly: stretch iframe to full wrapper width (reduces empty gutters) */
+  .calendly-inline-widget,
+  .calendly-inline-widget.calendly-fullbleed {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .calendly-inline-widget iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 100% !important;
+  }
 }
