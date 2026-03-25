@@ -1214,7 +1214,7 @@ function Footer() {
         borderTop: '1px solid rgba(255, 255, 255, 0.06)'
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-8 sm:mb-12">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -1226,7 +1226,7 @@ function Footer() {
               />
             </div>
             <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
-              The all-in-one operating system for insurance professionals - from lead acquisition to final issuance.
+              The all-in-one operating system for insurance professionals - from lead acquisition to final issuance.testing
             </p>
           </div>
 
