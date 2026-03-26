@@ -73,7 +73,7 @@ export function CalendlyEmbed() {
         <div className="overflow-hidden rounded-none sm:rounded-lg border-y border-[rgba(99,139,75,0.35)] sm:border sm:border-[rgba(99,139,75,0.4)] bg-transparent">
           <div
             ref={containerRef}
-            className="calendly-inline-widget w-full"
+            className="w-full"
             style={{
               minHeight: 'calc(100dvh - 14rem)',
               height: 'calc(100dvh - 14rem)',
