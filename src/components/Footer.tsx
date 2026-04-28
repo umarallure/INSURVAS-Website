@@ -60,13 +60,18 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
-                <a href="#" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">
+                <a href="/privacy-policy" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">
+                <a href="/terms-of-service" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">
                   Terms of Service
+                </a>
+              </li>
+              <li>
+                <a href="/sms-signup" className="text-white hover:text-[#638b4b] text-xs sm:text-sm transition-colors">
+                  SMS Sign Up
                 </a>
               </li>
             </ul>

@@ -959,7 +959,7 @@ function Contact() {
     <section id="contact" className="relative py-16 sm:py-24">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
-          <div 
+          <div
             className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6"
             style={{
               background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.08) 100%)',
@@ -974,43 +974,43 @@ function Contact() {
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-6xl font-extrabold mb-3 sm:mb-4">
-            <span className="text-white block">Let's Build</span>
-            <span 
+            <span className="text-white block">Get in Touch</span>
+            <span
               className="bg-clip-text text-transparent block mt-1 sm:mt-2"
               style={{
                 backgroundImage: 'linear-gradient(135deg, #638b4b 0%, #75a85e 25%, #5e9a52 50%, #3d6c31 100%)',
               }}
             >
-              Your Insurance Pipeline.
+              With Our Team.
             </span>
           </h2>
 
           <p className="text-white text-sm sm:text-lg font-medium">
-            Have questions or want to get started? Connect with our team and see how INSURVAS can help you scale faster.
+            Please fill out the following form and we'll be in touch with you in less than 24 hours.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
           <div className="space-y-3 sm:space-y-4 order-2 lg:order-1">
-            <ContactCard 
+            <ContactCard
               icon={Mail}
               label="Email Us"
               value="contact@insurvas.com"
               href="mailto:contact@insurvas.com"
             />
-            <ContactCard 
+            <ContactCard
               icon={Users}
               label="Join Our Network"
               value="Connect with IMOs, agencies, and agents inside the INSURVAS ecosystem."
               href="#"
             />
-            <ContactCard 
+            <ContactCard
               icon={Phone}
               label="Schedule a Call"
               value="Book a 15-min demo"
               href="#"
             />
-            <ContactCard 
+            <ContactCard
               icon={MapPin}
               label="Operating Nationwide"
               value="United States - All 50 States & U.S. Territories"
@@ -1024,7 +1024,7 @@ function Contact() {
             />
           </div>
 
-          <div 
+          <div
             className="rounded-2xl p-5 sm:p-8 order-1 lg:order-2"
             style={{
               background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
@@ -1034,10 +1034,10 @@ function Contact() {
               WebkitBackdropFilter: 'blur(18px)'
             }}
           >
-            <form className="space-y-4 sm:space-y-6">
+            <form className="space-y-4 sm:space-y-5">
               <div>
-                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Name</label>
-                <input 
+                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Your name</label>
+                <input
                   type="text"
                   placeholder="Your name"
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#638b4b]/50 transition-all text-sm sm:text-base"
@@ -1048,10 +1048,10 @@ function Contact() {
                 />
               </div>
               <div>
-                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Email</label>
-                <input 
+                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Email address</label>
+                <input
                   type="email"
-                  placeholder="you@company.com"
+                  placeholder="email@address.com"
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#638b4b]/50 transition-all text-sm sm:text-base"
                   style={{
                     background: 'rgba(0, 0, 0, 0.3)',
@@ -1060,9 +1060,30 @@ function Contact() {
                 />
               </div>
               <div>
+                <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Your Phone (optional)</label>
+                <input
+                  type="tel"
+                  placeholder="(555) 555-5555"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#638b4b]/50 transition-all text-sm sm:text-base"
+                  style={{
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 rounded accent-[#638b4b]"
+                  />
+                  <span className="text-white text-xs sm:text-sm">Auto Accident</span>
+                </label>
+              </div>
+              <div>
                 <label className="block text-white text-xs sm:text-sm mb-1.5 sm:mb-2">Message</label>
-                <textarea 
-                  placeholder="Tell us about your deals..."
+                <textarea
+                  placeholder="Message..."
                   rows={4}
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#638b4b]/50 transition-all resize-none text-sm sm:text-base"
                   style={{
@@ -1071,7 +1092,45 @@ function Contact() {
                   }}
                 />
               </div>
-              <button 
+
+              <div
+                className="rounded-xl p-4 sm:p-5"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)'
+                }}
+              >
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="mt-1 w-4 h-4 rounded accent-[#638b4b]"
+                  />
+                  <span className="text-white/80 text-xs sm:text-sm leading-relaxed">
+                    By checking this box, I agree to receive SMS messages from INSURVAS, including appointment reminders and notifications. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe. Reply HELP for help. Consent is not a condition of purchase.
+                  </span>
+                </label>
+              </div>
+
+              <div
+                className="rounded-xl p-4 sm:p-5"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)'
+                }}
+              >
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    required
+                    className="mt-1 w-4 h-4 rounded accent-[#638b4b]"
+                  />
+                  <span className="text-white/80 text-xs sm:text-sm leading-relaxed">
+                    I have reviewed and accept INSURVAS's <a href="/terms-of-service" className="text-[#638b4b] hover:underline">Terms and Conditions</a> and <a href="/privacy-policy" className="text-[#638b4b] hover:underline">Privacy Policy</a>.
+                  </span>
+                </label>
+              </div>
+
+              <button
                 type="submit"
                 className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 rounded-xl font-semibold text-black transition-all hover:scale-[1.02] hover:shadow-lg text-sm sm:text-base"
                 style={{
